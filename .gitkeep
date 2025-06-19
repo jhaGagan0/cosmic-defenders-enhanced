@@ -1,0 +1,22 @@
+## Directory Structure Files (.gitkeep)
+
+Create these empty files to maintain directory structure:
+
+assets/images/.gitkeep
+# This file ensures the images directory is tracked by Git
+# Remove this file when you add actual image assets
+
+
+assets/sounds/.gitkeep
+# This file ensures the sounds directory is tracked by Git
+# Remove this file when you add actual sound assets
+
+
+assets/fonts/.gitkeep
+# This file ensures the fonts directory is tracked by Git
+# Remove this file when you add actual font assets
+
+
+saves/.gitkeep (optional)
+# This file ensures the saves directory is tracked by Git
+# Save files are generated automatically during gameplay
