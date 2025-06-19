@@ -607,5 +607,137 @@ class UIManager:
             score_rect = score_surface.get_rect(center=(header_x_positions[2], y_offset))
             self.screen.blit(score_surface, score_rect)
             
-            # Difficulty
-            diff_color = DIFFICULTIES.
+             # Difficulty
+            diff_color = DIFFICULTIES.get(entry['difficulty'], {}).get('color', WHITE)
+            diff_surface = self.fonts['medium'].render(entry['difficulty'], True, diff_color)
+            diff_rect = diff_surface.get_rect(center=(header_x_positions[3], y_offset))
+            self.screen.blit(diff_surface, diff_rect)
+            
+            y_offset += 40
+        
+        # Back instruction
+        back_text = self.fonts['medium'].render("Press ESC to go back", True, UI_INFO)
+        back_rect = back_text.get_rect(center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT - 50))
+        self.screen.blit(back_text, back_rect)
+    
+    def render_game_over(self, score: int, high_score: int):
+        """Render game over screen."""
+        self._render_animated_background(self.animation_time)
+        
+        # Game Over title
+        game_over_text = self.fonts['xlarge'].render("GAME OVER", True, UI_DANGER)
+        game_over_rect = game_over_text.get_rect(center=(SCREEN_WIDTH // 2, 200))
+        self.screen.blit(game_over_text, game_over_rect)
+        
+        # Score
+        score_text = self.fonts['large'].render(f"Final Score: {score:,}", True, WHITE)
+        score_rect = score_text.get_rect(center=(SCREEN_WIDTH // 2, 300))
+        self.screen.blit(score_text, score_rect)
+        
+        # High score
+        if score >= high_score:
+            hs_text = self.fonts['medium'].render("NEW HIGH SCORE!", True, UI_SUCCESS)
+        else:
+            hs_text = self.fonts['medium'].render(f"High Score: {high_score:,}", True, UI_INFO)
+        hs_rect = hs_text.get_rect(center=(SCREEN_WIDTH // 2, 350))
+        self.screen.blit(hs_text, hs_rect)
+        
+        # Options
+        options = [
+            "Press SPACE to play again",
+            "Press ESC for main menu"
+        ]
+        
+        y_offset = 450
+        for option in options:
+            option_surface = self.fonts['medium'].render(option, True, UI_INFO)
+            option_rect = option_surface.get_rect(center=(SCREEN_WIDTH // 2, y_offset))
+            self.screen.blit(option_surface, option_rect)
+            y_offset += 40
+    
+    def handle_game_over_events(self, event) -> Optional[str]:
+        """Handle game over events."""
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_SPACE:
+                return "restart"
+            elif event.key == pygame.K_ESCAPE:
+                return "main_menu"
+        return None
+    
+    def render_level_complete(self, level: int, score: int):
+        """Render level complete screen."""
+        self._render_animated_background(self.animation_time)
+        
+        # Level Complete title
+        complete_text = self.fonts['xlarge'].render("LEVEL COMPLETE!", True, UI_SUCCESS)
+        complete_rect = complete_text.get_rect(center=(SCREEN_WIDTH // 2, 200))
+        self.screen.blit(complete_text, complete_rect)
+        
+        # Level info
+        level_text = self.fonts['large'].render(f"Level {level}", True, WHITE)
+        level_rect = level_text.get_rect(center=(SCREEN_WIDTH // 2, 280))
+        self.screen.blit(level_text, level_rect)
+        
+        # Score
+        score_text = self.fonts['medium'].render(f"Score: {score:,}", True, UI_INFO)
+        score_rect = score_text.get_rect(center=(SCREEN_WIDTH // 2, 330))
+        self.screen.blit(score_text, score_rect)
+        
+        # Options
+        options = [
+            "Press SPACE for next level",
+            "Press ESC for main menu"
+        ]
+        
+        y_offset = 400
+        for option in options:
+            option_surface = self.fonts['medium'].render(option, True, UI_INFO)
+            option_rect = option_surface.get_rect(center=(SCREEN_WIDTH // 2, y_offset))
+            self.screen.blit(option_surface, option_rect)
+            y_offset += 40
+    
+    def handle_level_complete_events(self, event) -> Optional[str]:
+        """Handle level complete events."""
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_SPACE:
+                return "next_level"
+            elif event.key == pygame.K_ESCAPE:
+                return "main_menu"
+        return None
+    
+    def render_daily_missions(self, missions: List[Dict]):
+        """Render daily missions screen."""
+        self._render_animated_background(self.animation_time)
+        
+        # Title
+        self.render_animated_title("DAILY MISSIONS", SCREEN_WIDTH // 2, 100)
+        
+        # Mission list
+        y_offset = 200
+        for i, mission in enumerate(missions):
+            # Mission background
+            mission_rect = pygame.Rect(SCREEN_WIDTH // 2 - 300, y_offset - 20, 600, 80)
+            pygame.draw.rect(self.screen, UI_SECONDARY, mission_rect, border_radius=10)
+            pygame.draw.rect(self.screen, UI_PRIMARY, mission_rect, 2, border_radius=10)
+            
+            # Mission text
+            mission_text = f"Mission {i + 1}: {mission['type'].title()}"
+            text_surface = self.fonts['medium'].render(mission_text, True, WHITE)
+            self.screen.blit(text_surface, (SCREEN_WIDTH // 2 - 280, y_offset - 10))
+            
+            # Target and reward
+            target_text = f"Target: {mission['target']}"
+            reward_text = f"Reward: {mission['reward'].replace('_', ' ').title()}"
+            
+            target_surface = self.fonts['small'].render(target_text, True, UI_INFO)
+            reward_surface = self.fonts['small'].render(reward_text, True, UI_SUCCESS)
+            
+            self.screen.blit(target_surface, (SCREEN_WIDTH // 2 - 280, y_offset + 15))
+            self.screen.blit(reward_surface, (SCREEN_WIDTH // 2 - 280, y_offset + 35))
+
+            y_offset += 100
+
+        # Back instruction
+        back_text = self.fonts['medium'].render("Press ESC to go back", True, UI_INFO)
+        back_rect = back_text.get_rect(center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT - 50))
+        self.screen.blit(back_text, back_rect)
